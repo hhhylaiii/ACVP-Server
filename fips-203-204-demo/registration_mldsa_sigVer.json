@@ -1,0 +1,48 @@
+{
+  "vsId": 42,
+  "algorithm": "ML-DSA",
+  "mode": "sigVer",
+  "revision": "FIPS204",
+  "isSample": true,
+  "capabilities": [
+    {
+      "parameterSets": [
+        "ML-DSA-44",
+        "ML-DSA-65",
+        "ML-DSA-87"
+      ],
+      "messageLength": [
+        {
+          "min": 8,
+          "max": 1024,
+          "increment": 8
+        }
+      ],
+      "hashAlgs": [
+        "SHA2-256",
+        "SHA2-512",
+        "SHAKE-128",
+        "SHAKE-256"
+      ],
+      "contextLength": [
+        {
+          "min": 0,
+          "max": 2040,
+          "increment": 8
+        }
+      ]
+    }
+  ],
+  "externalMu": [
+    true,
+    false
+  ],
+  "signatureInterfaces": [
+    "external",
+    "internal"
+  ],
+  "preHash": [
+    "pure",
+    "preHash"
+  ]
+}
