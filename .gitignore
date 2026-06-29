@@ -53,3 +53,6 @@ Import Schema Logs
 version.txt
 gen-val/src/solutions/all/qodana.yaml
 gen-val/samples/GenValAppRunner/src/Properties/launchSettings.json
+
+# Claude Code — ignore local/personal settings only; commit shared skills/commands/agents
+.claude/settings.local.json
