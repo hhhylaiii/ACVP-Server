@@ -15,6 +15,7 @@ public static class SafeErrorCodes
     public const string JobNotFound = "JOB_NOT_FOUND";
     public const string JobNotReady = "JOB_NOT_READY";
     public const string UnexpectedError = "UNEXPECTED_ERROR";
+    public const string MalformedUpload = "MALFORMED_UPLOAD";
 }
 
 /// <summary>
