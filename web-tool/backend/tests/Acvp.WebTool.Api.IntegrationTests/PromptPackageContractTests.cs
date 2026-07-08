@@ -62,6 +62,28 @@ public sealed class PromptPackageContractTests : IClassFixture<TestWebAppFactory
     }
 
     [Fact]
+    public async Task PromptPackage_EntriesCarryNoUtf8Bom()
+    {
+        var accepted = await _client.PostAsJsonAsync("/api/generate", new AlgorithmConfiguration(
+            "ML-KEM", "keyGen", ["ML-KEM-768"]));
+        var job = (await accepted.Content.ReadFromJsonAsync<Job>())!;
+        await JobPolling.WaitForTerminalAsync(_client, job.JobId);
+
+        var response = await _client.GetAsync($"/api/jobs/{job.JobId}/prompt-package");
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
+
+        foreach (var entry in zip.Entries)
+        {
+            using var entryStream = entry.Open();
+            var head = new byte[3];
+            _ = await entryStream.ReadAtLeastAsync(head, 3, throwOnEndOfStream: false);
+            head.Should().NotEqual(new byte[] { 0xEF, 0xBB, 0xBF },
+                $"{entry.Name} must not start with a UTF-8 BOM (strict JSON parsers reject it)");
+        }
+    }
+
+    [Fact]
     public async Task PromptPackage_JobNotSucceededYet_Returns409JobNotReady()
     {
         // Create a job directly in the store so its state is deterministically Queued.

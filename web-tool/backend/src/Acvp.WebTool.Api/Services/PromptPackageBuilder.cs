@@ -130,7 +130,8 @@ public sealed class PromptPackageBuilder
     private static void WriteEntry(ZipArchive zip, string name, string content)
     {
         var entry = zip.CreateEntry(name, CompressionLevel.Optimal);
-        using var writer = new StreamWriter(entry.Open(), Encoding.UTF8);
+        // No BOM: strict JSON parsers (e.g. Python's json module) reject BOM-prefixed files.
+        using var writer = new StreamWriter(entry.Open(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
         writer.Write(content);
     }
 }
