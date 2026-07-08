@@ -32,9 +32,7 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
   };
 
   const toggleParameterSet = (ps: string) => {
-    setParameterSets((prev) =>
-      prev.includes(ps) ? prev.filter((p) => p !== ps) : [...prev, ps],
-    );
+    setParameterSets((prev) => (prev.includes(ps) ? prev.filter((p) => p !== ps) : [...prev, ps]));
   };
 
   const canContinue = algorithm !== null && mode !== null && parameterSets.length > 0;
@@ -75,7 +73,8 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
               className={`choice ${algorithm === a.algorithm ? 'choice-selected' : ''}`}
               onClick={() => selectAlgorithm(a.algorithm)}
             >
-              {a.algorithm}（{a.algorithm === 'ML-KEM' ? 'FIPS 203 金鑰封裝' : 'FIPS 204 數位簽章'}）
+              {a.algorithm}（{a.algorithm === 'ML-KEM' ? 'FIPS 203 金鑰封裝' : 'FIPS 204 數位簽章'}
+              ）
             </button>
           ))}
         </div>

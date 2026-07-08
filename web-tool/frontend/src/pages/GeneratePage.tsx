@@ -11,7 +11,13 @@ export interface GeneratePageProps {
 }
 
 /** US1 — start the generate job, poll status, offer the prompt-package download. */
-export function GeneratePage({ configuration, job, onJobChanged, onBack, onContinue }: GeneratePageProps) {
+export function GeneratePage({
+  configuration,
+  job,
+  onJobChanged,
+  onBack,
+  onContinue,
+}: GeneratePageProps) {
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,7 +74,11 @@ export function GeneratePage({ configuration, job, onJobChanged, onBack, onConti
           工作狀態：
           <span
             className={`badge ${
-              succeeded ? 'badge-succeeded' : job.status === 'Failed' ? 'badge-failed' : 'badge-running'
+              succeeded
+                ? 'badge-succeeded'
+                : job.status === 'Failed'
+                  ? 'badge-failed'
+                  : 'badge-running'
             }`}
           >
             {job.status}

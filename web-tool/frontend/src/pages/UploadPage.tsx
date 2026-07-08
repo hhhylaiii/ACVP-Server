@@ -31,9 +31,7 @@ export function UploadPage({ generateJob, onValidated, onBack }: UploadPageProps
       if (finished.status === 'Succeeded') {
         onValidated(finished);
       } else {
-        setError(
-          finished.error ?? { code: 'UNEXPECTED_ERROR', message: '批改失敗，請稍後重試。' },
-        );
+        setError(finished.error ?? { code: 'UNEXPECTED_ERROR', message: '批改失敗，請稍後重試。' });
         setStatus(null);
       }
     } catch (e) {
@@ -52,7 +50,8 @@ export function UploadPage({ generateJob, onValidated, onBack }: UploadPageProps
     <section className="card">
       <h2>上傳作答</h2>
       <p className="hint">
-        請上傳貴公司模組針對 prompt.json 產生的 responses.json。 若只是想看流程，也可以直接上傳測試向量包內的
+        請上傳貴公司模組針對 prompt.json 產生的 responses.json。
+        若只是想看流程，也可以直接上傳測試向量包內的
         example-responses.json（示範用，必定全數通過）。
       </p>
 

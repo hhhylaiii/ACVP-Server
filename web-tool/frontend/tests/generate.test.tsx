@@ -89,7 +89,11 @@ describe('GeneratePage', () => {
       status: 'Queued',
       createdAt: new Date().toISOString(),
     };
-    const succeeded: Job = { ...queued, status: 'Succeeded', completedAt: new Date().toISOString() };
+    const succeeded: Job = {
+      ...queued,
+      status: 'Succeeded',
+      completedAt: new Date().toISOString(),
+    };
 
     vi.mocked(fetch)
       .mockResolvedValueOnce(jsonResponse(queued)) // POST /api/generate
