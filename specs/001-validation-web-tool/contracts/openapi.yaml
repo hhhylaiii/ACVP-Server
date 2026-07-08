@@ -317,6 +317,8 @@ components:
             - ENGINE_UNAVAILABLE
             - JOB_NOT_FOUND
             - JOB_NOT_READY
+            - MALFORMED_UPLOAD
+            - UNEXPECTED_ERROR
         message:
           type: string
           description: Safe, human-readable; never contains stack traces

@@ -1,0 +1,37 @@
+# Builds the FIPS 203/204 validation web tool into a single self-contained image:
+# the unmodified Orleans silo + the Web API + the built SPA. Running both
+# processes in one container keeps the proven localhost Orleans clustering.
+#
+# Build context must be the repository root:
+#   docker compose -f web-tool/deploy/docker-compose.yml up --build
+
+# ---------- frontend ----------
+FROM node:20-alpine AS frontend
+WORKDIR /src/frontend
+COPY web-tool/frontend/package.json web-tool/frontend/package-lock.json ./
+RUN npm ci
+COPY web-tool/frontend/ ./
+RUN npm run build
+
+# ---------- backend ----------
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend
+WORKDIR /src
+COPY Directory.Build.props Directory.Packages.props global.json ./
+COPY gen-val/ gen-val/
+COPY web-tool/backend/ web-tool/backend/
+RUN dotnet publish web-tool/backend/src/Acvp.WebTool.Api -c Release -o /app/web
+RUN dotnet publish gen-val/samples/NIST.CVP.ACVTS.Orleans.ServerHost -c Release -o /app/silo
+
+# ---------- runtime ----------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=backend /app/web ./web
+COPY --from=backend /app/silo ./silo
+COPY --from=frontend /src/frontend/dist ./web/wwwroot
+COPY web-tool/deploy/start.sh ./start.sh
+RUN chmod +x ./start.sh
+
+ENV ASPNETCORE_URLS=http://0.0.0.0:8080
+EXPOSE 8080
+
+CMD ["./start.sh"]

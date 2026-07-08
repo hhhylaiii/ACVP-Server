@@ -1,0 +1,22 @@
+# Single-command self-host for the FIPS 203/204 validation web tool (FR-012/FR-013):
+#   docker compose up --build
+# then open http://localhost:8080 — all data stays on this machine.
+#
+# NOTE: the engine requires MaxConcurrentWork (3, from sharedappsettings.json)
+# to stay below the CPU count; give the container at least 4 CPUs.
+services:
+  webtool:
+    build:
+      context: ../..
+      dockerfile: web-tool/deploy/Dockerfile.api
+    image: acvp-webtool:latest
+    ports:
+      - "8080:8080"
+    cpus: 4
+    environment:
+      - WebTool__Storage__ArtifactRoot=/app/web/artifacts
+    volumes:
+      - webtool-artifacts:/app/web/artifacts
+
+volumes:
+  webtool-artifacts:
