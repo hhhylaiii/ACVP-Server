@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>Acvp.WebTool.Api</RootNamespace>
+    <!-- The gen-val libraries are not annotated for nullable; keep warnings local to our code. -->
+    <NoWarn>$(NoWarn);NU1901;NU1902;NU1903</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Existing gen-val engine, referenced but never modified (Constitution Principle III). -->
+    <ProjectReference Include="..\..\..\..\gen-val\src\generation\src\NIST.CVP.ACVTS.Libraries.Generation\NIST.CVP.ACVTS.Libraries.Generation.csproj" />
+    <ProjectReference Include="..\..\..\..\gen-val\src\generation\src\NIST.CVP.ACVTS.Libraries.Generation.Core\NIST.CVP.ACVTS.Libraries.Generation.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\gen-val\src\oracle\src\NIST.CVP.ACVTS.Libraries.Crypto.Oracle\NIST.CVP.ACVTS.Libraries.Crypto.Oracle.csproj" />
+    <ProjectReference Include="..\..\..\..\gen-val\src\common\src\NIST.CVP.ACVTS.Libraries.Common\NIST.CVP.ACVTS.Libraries.Common.csproj" />
+  </ItemGroup>
+
+</Project>
