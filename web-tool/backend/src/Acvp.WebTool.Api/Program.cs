@@ -42,6 +42,9 @@ builder.Services.AddSingleton<ConfigurationValidator>();
 builder.Services.AddSingleton<RegistrationBuilder>();
 builder.Services.AddSingleton<PromptPackageBuilder>();
 builder.Services.AddSingleton<GenerateJobHandler>();
+builder.Services.AddSingleton<ResponseUploadValidator>();
+builder.Services.AddSingleton<ValidationReportBuilder>();
+builder.Services.AddSingleton<ValidateJobHandler>();
 
 var app = builder.Build();
 
@@ -58,6 +61,8 @@ api.MapCapabilitiesEndpoints();
 api.MapCheckEndpoints();
 api.MapGenerateEndpoints();
 api.MapJobsEndpoints();
+api.MapValidateEndpoints();
+api.MapReportEndpoints();
 
 var indexHtml = Path.Combine(app.Environment.WebRootPath ?? string.Empty, "index.html");
 if (File.Exists(indexHtml))
