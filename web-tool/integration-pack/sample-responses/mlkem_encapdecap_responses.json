@@ -1,0 +1,30 @@
+{
+  "vsId": 42,
+  "algorithm": "ML-KEM",
+  "mode": "encapDecap",
+  "revision": "FIPS203",
+  "isSample": true,
+  "testGroups": [
+    {
+      "tgId": 1,
+      "_comment": "function = encapsulation",
+      "tests": [
+        { "tcId": 1, "c": "7d10...(768/1088/1568 bytes hex)", "k": "aa55...(32 bytes hex)" }
+      ]
+    },
+    {
+      "tgId": 2,
+      "_comment": "function = decapsulation",
+      "tests": [
+        { "tcId": 2, "k": "c3d9...(32 bytes hex)" }
+      ]
+    },
+    {
+      "tgId": 3,
+      "_comment": "function = encapsulationKeyCheck / decapsulationKeyCheck",
+      "tests": [
+        { "tcId": 3, "testPassed": true }
+      ]
+    }
+  ]
+}

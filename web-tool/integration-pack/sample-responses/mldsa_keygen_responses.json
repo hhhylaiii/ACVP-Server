@@ -1,0 +1,15 @@
+{
+  "vsId": 42,
+  "algorithm": "ML-DSA",
+  "mode": "keyGen",
+  "revision": "FIPS204",
+  "isSample": true,
+  "testGroups": [
+    {
+      "tgId": 1,
+      "tests": [
+        { "tcId": 1, "pk": "e0b2...(1312/1952/2592 bytes hex)", "sk": "77aa...(2560/4032/4896 bytes hex)" }
+      ]
+    }
+  ]
+}

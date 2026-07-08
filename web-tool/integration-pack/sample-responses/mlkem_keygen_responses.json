@@ -1,0 +1,16 @@
+{
+  "vsId": 42,
+  "algorithm": "ML-KEM",
+  "mode": "keyGen",
+  "revision": "FIPS203",
+  "isSample": true,
+  "testGroups": [
+    {
+      "tgId": 1,
+      "tests": [
+        { "tcId": 1, "ek": "9a3c...(800/1184/1568 bytes hex)", "dk": "5f21...(1632/2400/3168 bytes hex)" },
+        { "tcId": 2, "ek": "b481...", "dk": "0ce7..." }
+      ]
+    }
+  ]
+}
