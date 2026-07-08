@@ -1,3 +1,4 @@
+using Acvp.WebTool.Api.Endpoints;
 using Acvp.WebTool.Api.Options;
 using Acvp.WebTool.Api.Services;
 using Acvp.WebTool.Api.Validation;
@@ -37,6 +38,10 @@ builder.Services.AddSingleton<JobQueue>();
 builder.Services.AddSingleton<IJobQueue>(sp => sp.GetRequiredService<JobQueue>());
 builder.Services.AddSingleton<IGenValService, GenValService>();
 builder.Services.AddHostedService<JobWorkerService>();
+builder.Services.AddSingleton<ConfigurationValidator>();
+builder.Services.AddSingleton<RegistrationBuilder>();
+builder.Services.AddSingleton<PromptPackageBuilder>();
+builder.Services.AddSingleton<GenerateJobHandler>();
 
 var app = builder.Build();
 
@@ -49,6 +54,10 @@ app.UseStaticFiles();
 
 var api = app.MapGroup("/api");
 api.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+api.MapCapabilitiesEndpoints();
+api.MapCheckEndpoints();
+api.MapGenerateEndpoints();
+api.MapJobsEndpoints();
 
 var indexHtml = Path.Combine(app.Environment.WebRootPath ?? string.Empty, "index.html");
 if (File.Exists(indexHtml))

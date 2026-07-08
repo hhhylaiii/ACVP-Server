@@ -25,6 +25,9 @@ public interface IJobStore
 public interface IJobQueue
 {
     Job Enqueue(JobKind kind, long vsId, AlgorithmConfiguration? configuration, Func<CancellationToken, Task> work);
+
+    /// <summary>Overload receiving the created job so the work can reference its id.</summary>
+    Job Enqueue(JobKind kind, long vsId, AlgorithmConfiguration? configuration, Func<Job, CancellationToken, Task> work);
 }
 
 public sealed class InMemoryJobStore : IJobStore
@@ -102,9 +105,12 @@ public sealed class JobQueue : IJobQueue
     }
 
     public Job Enqueue(JobKind kind, long vsId, AlgorithmConfiguration? configuration, Func<CancellationToken, Task> work)
+        => Enqueue(kind, vsId, configuration, (_, cancellationToken) => work(cancellationToken));
+
+    public Job Enqueue(JobKind kind, long vsId, AlgorithmConfiguration? configuration, Func<Job, CancellationToken, Task> work)
     {
         var job = _jobStore.Create(kind, vsId, configuration);
-        if (!_channel.Writer.TryWrite((job.JobId, work)))
+        if (!_channel.Writer.TryWrite((job.JobId, cancellationToken => work(job, cancellationToken))))
         {
             throw new InvalidOperationException("The job queue is no longer accepting work.");
         }
