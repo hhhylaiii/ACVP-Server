@@ -29,6 +29,10 @@ docker compose up --build
 
 > 注意：引擎要求 `MaxConcurrentWork`（預設 3）低於可用 CPU 數，請給容器至少 4 顆 CPU。
 
+API 管理頁面（Swagger UI）：**`http://localhost:8080/swagger`** — 由
+`docker-compose.yml` 中的 `WebTool__Swagger__Enabled=true` 開啟；此工具完全在本機
+運行，不會外洩資料，若仍想關閉，移除該環境變數即可。
+
 ## 快速開始 — 本機開發（三個終端機）
 
 ```bash
@@ -45,8 +49,19 @@ cd web-tool/frontend
 npm install && npm run dev
 ```
 
-開發模式下 Web API 另提供 Swagger UI（互動式 API 文件與測試頁面）：
-`http://localhost:5210/swagger`。正式環境（Docker）不會開啟此頁面。
+### API 管理頁面（Swagger UI）
+
+互動式 API 文件：可瀏覽全部 `/api/*` 端點（依 Capabilities / Generation /
+Validation / Jobs / Reports / Health 分組），並用「Try it out」直接試打。
+
+| 啟動方式 | 網址 | 開啟條件 |
+|----------|------|----------|
+| 本機開發（`dotnet run`） | `http://localhost:5210/swagger` | Development 環境固定開啟 |
+| Docker 自架 | `http://localhost:8080/swagger` | compose 已預設 `WebTool__Swagger__Enabled=true` |
+| 其他部署 | `<host>/swagger` | 預設關閉；設定 `WebTool:Swagger:Enabled = true`（環境變數 `WebTool__Swagger__Enabled=true`）開啟 |
+
+> 若瀏覽器曾在加入此功能前開過 `/swagger` 而看到前端頁面，是快取所致，
+> 按 ⌘+Shift+R 強制重新整理即可。
 
 ### 疑難排解：終端機 1 出現 `Failed to bind to address http://[::]:8081`
 
