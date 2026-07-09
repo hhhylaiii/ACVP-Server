@@ -2,6 +2,7 @@ using System.Net;
 using Acvp.WebTool.Api.IntegrationTests.Infrastructure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace Acvp.WebTool.Api.IntegrationTests;
@@ -48,12 +49,37 @@ public sealed class SwaggerContractTests : IClassFixture<TestWebAppFactory>
         (await client.GetAsync("/swagger/index.html")).StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    private sealed class ProductionWebAppFactory : TestWebAppFactory
+    [Fact]
+    public async Task Swagger_InProduction_CanBeEnabledByConfiguration()
+    {
+        using var factory = new ProductionWithSwaggerWebAppFactory();
+        using var client = factory.CreateClient();
+
+        (await client.GetAsync("/swagger/v1/swagger.json")).StatusCode.Should().Be(HttpStatusCode.OK);
+        (await client.GetAsync("/swagger/index.html")).StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    private class ProductionWebAppFactory : TestWebAppFactory
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             base.ConfigureWebHost(builder);
             builder.UseEnvironment("Production");
+        }
+    }
+
+    private sealed class ProductionWithSwaggerWebAppFactory : ProductionWebAppFactory
+    {
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            base.ConfigureWebHost(builder);
+            builder.ConfigureAppConfiguration((_, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["WebTool:Swagger:Enabled"] = "true",
+                });
+            });
         }
     }
 }
