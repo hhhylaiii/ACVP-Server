@@ -42,7 +42,7 @@ describe('SelectPage', () => {
     const user = userEvent.setup();
 
     render(<SelectPage onConfirmed={onConfirmed} />);
-    const continueButton = await screen.findByRole('button', { name: /下一步/ });
+    const continueButton = await screen.findByRole('button', { name: /Next/ });
     expect(continueButton).toBeDisabled();
 
     await user.click(screen.getByRole('button', { name: /ML-KEM/ }));
@@ -113,7 +113,7 @@ describe('GeneratePage', () => {
       />,
     );
 
-    await user.click(screen.getByRole('button', { name: '產生測試向量' }));
+    await user.click(screen.getByRole('button', { name: 'Generate Test Vectors' }));
 
     await waitFor(() => expect(job?.status).toBe('Succeeded'));
     rerender(
@@ -126,7 +126,7 @@ describe('GeneratePage', () => {
       />,
     );
 
-    const download = await screen.findByRole('link', { name: /下載測試向量包/ });
+    const download = await screen.findByRole('link', { name: /Download Prompt Package/ });
     expect(download).toHaveAttribute('href', '/api/jobs/job-1/prompt-package');
   });
 
@@ -141,7 +141,7 @@ describe('GeneratePage', () => {
     const failed: Job = {
       ...queued,
       status: 'Failed',
-      error: { code: 'ENGINE_UNAVAILABLE', message: '驗證引擎目前無法連線' },
+      error: { code: 'ENGINE_UNAVAILABLE', message: 'Validation engine is currently unavailable' },
     };
 
     vi.mocked(fetch)
@@ -159,8 +159,10 @@ describe('GeneratePage', () => {
       />,
     );
 
-    await user.click(screen.getByRole('button', { name: '產生測試向量' }));
+    await user.click(screen.getByRole('button', { name: 'Generate Test Vectors' }));
 
-    expect(await screen.findByText(/驗證引擎目前無法連線/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Validation engine is currently unavailable/),
+    ).toBeInTheDocument();
   });
 });

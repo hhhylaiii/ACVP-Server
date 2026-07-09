@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getCapabilities } from '../api/client';
 import type { Algorithm, AlgorithmConfiguration, Capabilities, Mode } from '../api/types';
+import { ALGORITHM_INFO, MODE_INFO, PARAMETER_SET_INFO } from '../domain/algorithmInfo';
+import { IconKey, IconSignature } from '../components/icons';
 
 export interface SelectPageProps {
   onConfirmed: (config: AlgorithmConfiguration) => void;
@@ -40,8 +42,11 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
   if (loadError) {
     return (
       <section className="card">
-        <h2>選擇演算法</h2>
-        <div className="error-box">無法載入支援清單：{loadError}</div>
+        <header className="card-header">
+          <span className="overline">Step 1</span>
+          <h2>Select Algorithm</h2>
+        </header>
+        <div className="error-box">Failed to load supported algorithms: {loadError}</div>
       </section>
     );
   }
@@ -49,10 +54,13 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
   if (!capabilities) {
     return (
       <section className="card">
-        <h2>選擇演算法</h2>
-        <p>
+        <header className="card-header">
+          <span className="overline">Step 1</span>
+          <h2>Select Algorithm</h2>
+        </header>
+        <p className="loading-line">
           <span className="spinner" aria-hidden />
-          載入支援的演算法中…
+          Loading supported algorithms…
         </p>
       </section>
     );
@@ -60,38 +68,57 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
 
   return (
     <section className="card">
-      <h2>選擇演算法</h2>
-      <p className="hint">僅列出本工具支援的 FIPS 203 / FIPS 204 組合，無法選到不支援的選項。</p>
+      <header className="card-header">
+        <span className="overline">Step 1</span>
+        <h2>Select Algorithm</h2>
+        <p className="hint">
+          Only FIPS 203 / FIPS 204 combinations supported by this tool are listed — unsupported
+          options are unreachable.
+        </p>
+      </header>
 
       <div className="field">
-        <span className="field-label">演算法</span>
-        <div className="choice-grid">
-          {capabilities.algorithms.map((a) => (
-            <button
-              key={a.algorithm}
-              type="button"
-              className={`choice ${algorithm === a.algorithm ? 'choice-selected' : ''}`}
-              onClick={() => selectAlgorithm(a.algorithm)}
-            >
-              {a.algorithm}（{a.algorithm === 'ML-KEM' ? 'FIPS 203 金鑰封裝' : 'FIPS 204 數位簽章'}
-              ）
-            </button>
-          ))}
+        <span className="field-label">Algorithm</span>
+        <div className="algo-grid">
+          {capabilities.algorithms.map((a) => {
+            const info = ALGORITHM_INFO[a.algorithm];
+            const selected = algorithm === a.algorithm;
+            return (
+              <button
+                key={a.algorithm}
+                type="button"
+                className={`algo-card ${selected ? 'algo-card-selected' : ''}`}
+                onClick={() => selectAlgorithm(a.algorithm)}
+              >
+                <span className="algo-head">
+                  <span className="algo-icon">
+                    {a.algorithm === 'ML-KEM' ? <IconKey /> : <IconSignature />}
+                  </span>
+                  <span className="algo-name">{a.algorithm}</span>
+                  <span className="tag">{info.standard}</span>
+                </span>
+                <span className="algo-title">{info.title}</span>
+                <span className="algo-desc">{info.description}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {current && (
         <div className="field">
-          <span className="field-label">模式</span>
+          <span className="field-label">Mode</span>
           <div className="choice-grid">
             {current.modes.map((m) => (
               <button
                 key={m}
                 type="button"
+                aria-label={m}
                 className={`choice ${mode === m ? 'choice-selected' : ''}`}
                 onClick={() => setMode(m)}
               >
-                {m}
+                <span className="choice-title mono">{m}</span>
+                <span className="choice-sub">{MODE_INFO[m]}</span>
               </button>
             ))}
           </div>
@@ -100,19 +127,35 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
 
       {current && mode && (
         <div className="field">
-          <span className="field-label">參數集（可複選）</span>
+          <span className="field-label">
+            Parameter Sets<span className="field-label-note">multi-select</span>
+          </span>
           <div className="choice-grid">
-            {current.parameterSets.map((ps) => (
-              <button
-                key={ps}
-                type="button"
-                className={`choice ${parameterSets.includes(ps) ? 'choice-selected' : ''}`}
-                onClick={() => toggleParameterSet(ps)}
-              >
-                {ps}
-              </button>
-            ))}
+            {current.parameterSets.map((ps) => {
+              const info = PARAMETER_SET_INFO[ps];
+              return (
+                <button
+                  key={ps}
+                  type="button"
+                  aria-label={ps}
+                  className={`choice ${parameterSets.includes(ps) ? 'choice-selected' : ''}`}
+                  onClick={() => toggleParameterSet(ps)}
+                >
+                  <span className="choice-title mono">{ps}</span>
+                  {info && (
+                    <span className="choice-sub">
+                      <span className="cat-badge">Cat {info.category}</span>
+                      {info.strength}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
+          <p className="field-note">
+            Cat is the NIST post-quantum security category (1–5); a higher category means a stronger
+            security level.
+          </p>
         </div>
       )}
 
@@ -129,9 +172,18 @@ export function SelectPage({ onConfirmed }: SelectPageProps) {
             })
           }
         >
-          下一步：產生測試向量
+          Next: Generate Test Vectors
         </button>
-        {!canContinue && <span className="hint">請依序選擇演算法、模式與至少一個參數集。</span>}
+        {canContinue ? (
+          <span className="hint">
+            Selected <strong>{algorithm}</strong> / <strong>{mode}</strong> / {parameterSets.length}{' '}
+            parameter set{parameterSets.length > 1 ? 's' : ''}
+          </span>
+        ) : (
+          <span className="hint">
+            Choose an algorithm, a mode, and at least one parameter set to continue.
+          </span>
+        )}
       </div>
     </section>
   );
