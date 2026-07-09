@@ -21,7 +21,11 @@ public static class GenerateEndpoints
                 (createdJob, cancellationToken) => handler.RunAsync(createdJob, configuration, cancellationToken));
 
             return Results.Accepted($"/api/jobs/{job.JobId}", job);
-        });
+        })
+        .WithTags("Generation")
+        .WithSummary("Enqueue a test-vector generation job; poll /api/jobs/{jobId} for progress.")
+        .Produces<Job>(StatusCodes.Status202Accepted)
+        .Produces<SafeError>(StatusCodes.Status400BadRequest);
 
         return api;
     }

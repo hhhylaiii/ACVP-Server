@@ -80,7 +80,9 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 var api = app.MapGroup("/api");
-api.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+api.MapGet("/health", () => Results.Ok(new { status = "ok" }))
+    .WithTags("Health")
+    .WithSummary("Liveness probe.");
 api.MapCapabilitiesEndpoints();
 api.MapCheckEndpoints();
 api.MapGenerateEndpoints();
