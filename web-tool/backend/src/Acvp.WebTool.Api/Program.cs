@@ -13,7 +13,7 @@ using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- OpenAPI / Swagger UI (development only; production serves the SPA without it) ---
+// --- OpenAPI / Swagger UI (always on in Development; opt-in elsewhere via WebTool:Swagger:Enabled) ---
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -44,6 +44,7 @@ builder.Services.AddSingleton<IGenValInvoker>(sp => new GenValInvoker(sp));
 
 // --- web tool services ---
 builder.Services.Configure<EngineOptions>(builder.Configuration.GetSection(EngineOptions.SectionName));
+builder.Services.Configure<SwaggerOptions>(builder.Configuration.GetSection(SwaggerOptions.SectionName));
 builder.Services.Configure<LimitsOptions>(builder.Configuration.GetSection(LimitsOptions.SectionName));
 builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(StorageOptions.SectionName));
 builder.Services.AddSingleton<IArtifactStore, ArtifactStore>();
@@ -64,7 +65,8 @@ var app = builder.Build();
 
 app.UseMiddleware<SafeErrorMiddleware>();
 
-if (app.Environment.IsDevelopment())
+var swaggerOptions = app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<SwaggerOptions>>().Value;
+if (app.Environment.IsDevelopment() || swaggerOptions.Enabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
