@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
 using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ParameterTypes.ML_DSA;
 using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ParameterTypes.ML_KEM;
-using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ParameterTypes.SLH_DSA;
 using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ResultTypes;
 using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ResultTypes.ML_DSA;
 using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ResultTypes.ML_KEM;
-using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions.ResultTypes.SLH_DSA;
 
 namespace NIST.CVP.ACVTS.Libraries.Oracle.Abstractions;
 
@@ -24,9 +22,4 @@ public partial interface IOracle
     public Task<MLKEMEncapsulationResult> GetMLKEMDecapCaseAsync(MLKEMDecapsulationParameters param);   // This function performs encapsulation
     public Task<MLKEMKeyPairResult> GetMLKEMEncapKeyCheckCaseAsync(MLKEMKeyGenParameters param);
     public Task<MLKEMKeyPairResult> GetMLKEMDecapKeyCheckCaseAsync(MLKEMKeyGenParameters param);
-    
-    // SLH-DSA
-    public Task<SLHDSAKeyPairResult> GetSLHDSAKeyCaseAsync(SLHDSAKeyGenParameters param);
-    public Task<SLHDSASignatureResult> GetSLHDSASigGenCaseAsync(SLHDSASignatureParameters param);
-    public Task<VerifyResult<SLHDSASignatureResult>> GetSLHDSASigVerCaseAsync(SLHDSASignatureParameters param);
 }

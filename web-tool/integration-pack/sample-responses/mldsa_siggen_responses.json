@@ -1,0 +1,15 @@
+{
+  "vsId": 42,
+  "algorithm": "ML-DSA",
+  "mode": "sigGen",
+  "revision": "FIPS204",
+  "isSample": true,
+  "testGroups": [
+    {
+      "tgId": 1,
+      "tests": [
+        { "tcId": 1, "signature": "4df0...(2420/3309/4627 bytes hex)" }
+      ]
+    }
+  ]
+}
