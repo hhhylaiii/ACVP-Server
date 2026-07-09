@@ -2,7 +2,8 @@
 
 自架的網頁工具：讓非密碼學專業的操作人員在瀏覽器中完成 FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)
 的 ACVP 測試向量產生與作答批改，不需要命令列。底層完全重用本 repo 既有的 Gen/Val 引擎
-（`IGenValInvoker` + Orleans Silo），**上游密碼學程式碼零修改**。
+（`IGenValInvoker` + Orleans Silo），**引擎的密碼學行為未修改**（本 repo 自 PR #8 起為
+僅含 ML-KEM/ML-DSA 的精簡 fork）。
 
 A self-hosted web tool that lets a non-cryptographer generate ACVP test vectors for
 FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA), hand them to their own module offline, upload the

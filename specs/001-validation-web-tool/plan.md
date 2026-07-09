@@ -4,6 +4,27 @@
 
 **Input**: Feature specification from `/specs/001-validation-web-tool/spec.md`
 
+## Status (updated 2026-07-09)
+
+✅ **Implemented and merged to `master`** (PRs #3–#7, consolidated by PR #8; all feature
+branches deleted). Post-merge verification: 3 solution roots build clean, 99 backend +
+6 frontend tests green, golden parity 7/7 across all 5 modes with CLI oracle cross-check,
+live E2E walkthrough passed.
+
+**Deviation from this plan — repo prune (PR #8, branch `006-prune-unused-algorithms`)**:
+after the feature merged, the repository was trimmed to FIPS 203/204 scope: `gen-val/`
+now contains only ML-KEM/ML-DSA plus their SHA/SHAKE dependencies (Generation, Oracle,
+Orleans Grains, Crypto). Upstream test projects, legacy CAVS/test files, sample vector
+sets outside scope, AcvpPools, and per-algorithm solutions were deleted (~958 MB →
+~94 MB tracked). The original "upstream crypto untouched" stance (Principle III) is
+therefore superseded by **"maintain our own slim fork"** — engine behavior is unchanged,
+but the tree is no longer a superset of upstream. WT-BL-005 (pin upstream) is obsolete
+accordingly.
+
+**Deployment note**: the shipped `docker compose up` runs the Orleans Silo and the Web
+API in a **single container** (localhost clustering); cross-container clustering is a
+deferred follow-up.
+
 ## Summary
 
 Build a self-hosted web tool that lets a non-cryptographer operator generate ACVP
@@ -153,5 +174,7 @@ shell-out in the main flow (the CLI is retained only as the golden-parity oracle
 - **WT-BL-002** (Dev B): Advanced ML-DSA option surface (deterministic, externalMu, preHash, hashAlgs) behind an "advanced" toggle. MVP ships safe defaults only.
 - **WT-BL-003** (Dev A): Streaming/chunked upload for very large response files beyond the configured size limit.
 - **WT-BL-004** (Dev C): Expand golden-parity test matrix to additional parameter sets and corrupted-answer fuzz cases.
-- **WT-BL-005** (Dev A): Pin upstream `gen-val` to a specific commit/tag to guard against breaking changes (risk R8).
+- ~~**WT-BL-005** (Dev A): Pin upstream `gen-val` to a specific commit/tag to guard against breaking changes (risk R8).~~ **Obsolete** — the repo is now a pruned slim fork (PR #8); upstream tracking no longer applies.
 - **WT-BL-006** (future): CMVP-format submission report export; additional PQC algorithms (SLH-DSA/LMS); hosted SaaS option. Out of this term's scope.
+- **WT-BL-007** (new, from T056): Automate the Select → Generate → Upload → Report Playwright smoke test (`web-tool/frontend/tests/e2e/smoke.spec.ts`); SC-001/SC-002 currently rest on a manual live E2E run.
+- **WT-BL-008** (new): Cross-container Orleans clustering for the Docker deployment (current compose runs Silo + API in one container via localhost clustering).
