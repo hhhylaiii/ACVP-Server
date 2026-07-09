@@ -45,6 +45,24 @@ cd web-tool/frontend
 npm install && npm run dev
 ```
 
+開發模式下 Web API 另提供 Swagger UI（互動式 API 文件與測試頁面）：
+`http://localhost:5210/swagger`。正式環境（Docker）不會開啟此頁面。
+
+### 疑難排解：終端機 1 出現 `Failed to bind to address http://[::]:8081`
+
+Silo 是長駐程序；若前一次啟動的 Silo 沒有真正結束，重新執行 `dotnet run --console`
+時新實例的 dashboard 會因 8081 被占用而印出一大段 `fail` stack trace。
+**這不會讓 Silo 退出**（核心 gateway 30000 照常運作），但殘留多個 Silo 會讓連線
+狀態混亂。啟動前先清乾淨即可：
+
+```bash
+pkill -f NIST.CVP.ACVTS.Orleans.ServerHost   # 停掉所有殘留 Silo
+lsof -nP -iTCP:8081 -sTCP:LISTEN             # 確認 8081 已釋放
+```
+
+另外，macOS/Linux 上啟動時印出的 `PlatformNotSupportedException`（Windows 效能
+計數器）警告為上游程式碼的已知現象，可安全忽略。
+
 ## 操作流程（瀏覽器）
 
 1. **選擇演算法**：演算法 → 模式 → 參數集（不支援的組合點不到）。
