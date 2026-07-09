@@ -1,8 +1,9 @@
 # Quickstart: FIPS 203/204 Validation Web Tool
 
-This is the developer/operator quickstart for the planned web tool. Until the tool is
-implemented, the underlying flow can be exercised with the existing CLI demo (see
-`fips-203-204-demo/README_DEMO_PQC-zh-TW.md`).
+This is the developer/operator quickstart for the web tool (implemented under
+`web-tool/`, merged to `master` 2026-07-09). The same flow can also be exercised with
+the CLI demo (see `fips-203-204-demo/README_DEMO_PQC-zh-TW.md`), which now serves as
+the golden-parity oracle for tests.
 
 ## Prerequisites
 
@@ -16,8 +17,8 @@ implemented, the underlying flow can be exercised with the existing CLI demo (se
 
 ```bash
 cd web-tool/deploy
-docker compose up
-# Open the printed URL in a browser (web + Orleans Silo both start)
+docker compose up --build
+# Open http://localhost:8080 (a single container runs both the Orleans Silo and the web tool)
 ```
 
 Operator steps in the browser:

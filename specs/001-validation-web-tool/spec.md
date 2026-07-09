@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-29
 
-**Status**: Draft
+**Status**: ✅ Implemented — merged to `master` via PRs #3–#8 (2026-07-09). All three user stories delivered; see `tasks.md` for the task-level record (only the Playwright smoke automation, T056, is deferred).
 
 **Input**: User description: "參考 ~/project-docs/planning 內的檔案" — a self-hosted web tool that lets non-cryptographer users validate their cryptographic module (IUT) implementations of FIPS 203 (ML-KEM) and FIPS 204 (ML-DSA) without using a command line, reusing the existing NIST ACVP Gen/Val engine.
 
