@@ -13,6 +13,20 @@ using NIST.CVP.ACVTS.Libraries.Oracle.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- OpenAPI / Swagger UI (development only; production serves the SPA without it) ---
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+    {
+        Title = "FIPS 203/204 Validation Web Tool API",
+        Version = "v1",
+        Description = "Generate ACVP test vectors for ML-KEM (FIPS 203) / ML-DSA (FIPS 204), "
+            + "upload responses and read pass/fail reports. Contract source of truth: "
+            + "specs/001-validation-web-tool/contracts/openapi.yaml.",
+    });
+});
+
 // --- gen-val engine configuration (mirrors EntryPointConfigHelper; upstream code unmodified) ---
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDbConnectionStringFactory, DbConnectionStringFactory>();
@@ -49,6 +63,16 @@ builder.Services.AddSingleton<ValidateJobHandler>();
 var app = builder.Build();
 
 app.UseMiddleware<SafeErrorMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Validation Web Tool API v1");
+        options.DocumentTitle = "Validation Web Tool API";
+    });
+}
 
 // Serve the built SPA when bundled (production); during development the Vite
 // dev server proxies /api to this host instead.
