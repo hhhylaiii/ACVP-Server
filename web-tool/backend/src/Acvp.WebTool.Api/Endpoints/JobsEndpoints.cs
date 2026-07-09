@@ -13,7 +13,11 @@ public static class JobsEndpoints
         {
             var job = store.Get(jobId) ?? throw WebToolException.NotFound(jobId);
             return Results.Ok(job);
-        });
+        })
+        .WithTags("Jobs")
+        .WithSummary("Get the status of a generation or validation job.")
+        .Produces<Job>()
+        .Produces<SafeError>(StatusCodes.Status404NotFound);
 
         api.MapGet("/jobs/{jobId}/prompt-package", async (
             string jobId,
@@ -35,7 +39,12 @@ public static class JobsEndpoints
 
             var zip = packageBuilder.BuildZip(prompt, example, instructions);
             return Results.File(zip, "application/zip", $"prompt-package-{jobId}.zip");
-        });
+        })
+        .WithTags("Generation")
+        .WithSummary("Download the prompt package (prompt.json + example-responses.json + INSTRUCTIONS.md) of a succeeded generation job.")
+        .Produces(StatusCodes.Status200OK, contentType: "application/zip")
+        .Produces<SafeError>(StatusCodes.Status404NotFound)
+        .Produces<SafeError>(StatusCodes.Status409Conflict);
 
         return api;
     }

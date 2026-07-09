@@ -21,7 +21,11 @@ public static class CheckEndpoints
             validator.Validate(configuration);
             var registration = registrationBuilder.Build(configuration, vsId: 1, engineOptions.Value.UseSampleVectors);
             return Results.Ok(engine.CheckParameters(registration));
-        });
+        })
+        .WithTags("Capabilities")
+        .WithSummary("Validate an algorithm configuration synchronously without enqueuing a job.")
+        .Produces<CheckResult>()
+        .Produces<SafeError>(StatusCodes.Status400BadRequest);
 
         return api;
     }

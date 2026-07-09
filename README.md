@@ -84,6 +84,7 @@
 cd web-tool/deploy
 docker compose up --build
 # 開啟 http://localhost:8080
+# API 管理頁面（Swagger UI）：http://localhost:8080/swagger
 ```
 
 本機開發（三個終端機）與測試指令見 [`web-tool/README.md`](web-tool/README.md)。

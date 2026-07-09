@@ -14,4 +14,8 @@
     <ProjectReference Include="..\..\..\..\gen-val\src\common\src\NIST.CVP.ACVTS.Libraries.Common\NIST.CVP.ACVTS.Libraries.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
 </Project>

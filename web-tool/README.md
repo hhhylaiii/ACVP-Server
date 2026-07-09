@@ -29,6 +29,10 @@ docker compose up --build
 
 > 注意：引擎要求 `MaxConcurrentWork`（預設 3）低於可用 CPU 數，請給容器至少 4 顆 CPU。
 
+API 管理頁面（Swagger UI）：**`http://localhost:8080/swagger`** — 由
+`docker-compose.yml` 中的 `WebTool__Swagger__Enabled=true` 開啟；此工具完全在本機
+運行，不會外洩資料，若仍想關閉，移除該環境變數即可。
+
 ## 快速開始 — 本機開發（三個終端機）
 
 ```bash
@@ -44,6 +48,35 @@ dotnet run
 cd web-tool/frontend
 npm install && npm run dev
 ```
+
+### API 管理頁面（Swagger UI）
+
+互動式 API 文件：可瀏覽全部 `/api/*` 端點（依 Capabilities / Generation /
+Validation / Jobs / Reports / Health 分組），並用「Try it out」直接試打。
+
+| 啟動方式 | 網址 | 開啟條件 |
+|----------|------|----------|
+| 本機開發（`dotnet run`） | `http://localhost:5210/swagger` | Development 環境固定開啟 |
+| Docker 自架 | `http://localhost:8080/swagger` | compose 已預設 `WebTool__Swagger__Enabled=true` |
+| 其他部署 | `<host>/swagger` | 預設關閉；設定 `WebTool:Swagger:Enabled = true`（環境變數 `WebTool__Swagger__Enabled=true`）開啟 |
+
+> 若瀏覽器曾在加入此功能前開過 `/swagger` 而看到前端頁面，是快取所致，
+> 按 ⌘+Shift+R 強制重新整理即可。
+
+### 疑難排解：終端機 1 出現 `Failed to bind to address http://[::]:8081`
+
+Silo 是長駐程序；若前一次啟動的 Silo 沒有真正結束，重新執行 `dotnet run --console`
+時新實例的 dashboard 會因 8081 被占用而印出一大段 `fail` stack trace。
+**這不會讓 Silo 退出**（核心 gateway 30000 照常運作），但殘留多個 Silo 會讓連線
+狀態混亂。啟動前先清乾淨即可：
+
+```bash
+pkill -f NIST.CVP.ACVTS.Orleans.ServerHost   # 停掉所有殘留 Silo
+lsof -nP -iTCP:8081 -sTCP:LISTEN             # 確認 8081 已釋放
+```
+
+另外，macOS/Linux 上啟動時印出的 `PlatformNotSupportedException`（Windows 效能
+計數器）警告為上游程式碼的已知現象，可安全忽略。
 
 ## 操作流程（瀏覽器）
 

@@ -67,7 +67,14 @@ public static class ValidateEndpoints
                 (createdJob, ct) => handler.RunAsync(createdJob, generateJobId, responsesJson, ct));
 
             return Results.Accepted($"/api/jobs/{job.JobId}", job);
-        });
+        })
+        .WithTags("Validation")
+        .WithSummary("Upload responses.json (multipart: 'jobId' field + 'responses' file) and enqueue a validation job.")
+        .Produces<Job>(StatusCodes.Status202Accepted)
+        .Produces<SafeError>(StatusCodes.Status400BadRequest)
+        .Produces<SafeError>(StatusCodes.Status404NotFound)
+        .Produces<SafeError>(StatusCodes.Status409Conflict)
+        .Produces<SafeError>(StatusCodes.Status413PayloadTooLarge);
 
         return api;
     }

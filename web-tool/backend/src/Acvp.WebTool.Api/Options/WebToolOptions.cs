@@ -32,3 +32,15 @@ public sealed class StorageOptions
     /// <summary>Root directory for per-job artifact folders (relative to content root or absolute).</summary>
     public string ArtifactRoot { get; init; } = "artifacts";
 }
+
+/// <summary>Swagger UI exposure. Always on in Development; opt-in elsewhere.</summary>
+public sealed class SwaggerOptions
+{
+    public const string SectionName = "WebTool:Swagger";
+
+    /// <summary>
+    /// Expose Swagger UI outside Development (e.g. the Docker self-host).
+    /// The tool is fully local, so enabling it does not leak data off-machine.
+    /// </summary>
+    public bool Enabled { get; init; }
+}

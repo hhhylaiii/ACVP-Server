@@ -18,7 +18,12 @@ public static class ReportEndpoints
         {
             var validationJson = await ReadValidationJsonAsync(jobId, store, artifacts, cancellationToken);
             return Results.Ok(reportBuilder.Build(jobId, validationJson));
-        });
+        })
+        .WithTags("Reports")
+        .WithSummary("Get the human-readable pass/fail report of a succeeded validation job.")
+        .Produces<ValidationReport>()
+        .Produces<SafeError>(StatusCodes.Status404NotFound)
+        .Produces<SafeError>(StatusCodes.Status409Conflict);
 
         api.MapGet("/jobs/{jobId}/validation-json", async (
             string jobId,
@@ -28,7 +33,12 @@ public static class ReportEndpoints
         {
             var validationJson = await ReadValidationJsonAsync(jobId, store, artifacts, cancellationToken);
             return Results.Text(validationJson, "application/json");
-        });
+        })
+        .WithTags("Reports")
+        .WithSummary("Download the machine-readable validation.json of a succeeded validation job.")
+        .Produces(StatusCodes.Status200OK, contentType: "application/json")
+        .Produces<SafeError>(StatusCodes.Status404NotFound)
+        .Produces<SafeError>(StatusCodes.Status409Conflict);
 
         return api;
     }
