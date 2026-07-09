@@ -42,10 +42,10 @@ describe('ReportPage', () => {
 
     render(<ReportPage validateJob={validateJob} onRestart={vi.fn()} onUploadAgain={vi.fn()} />);
 
-    expect(await screen.findByText(/通過 \(passed\)/)).toBeInTheDocument();
-    expect(screen.getByText('測試案例總數').previousElementSibling).toHaveTextContent('3');
+    expect(await screen.findByText('Validation Passed')).toBeInTheDocument();
+    expect(screen.getByText('Total Test Cases').previousElementSibling).toHaveTextContent('3');
 
-    const download = screen.getByRole('link', { name: /下載 validation\.json/ });
+    const download = screen.getByRole('link', { name: /Download validation\.json/ });
     expect(download).toHaveAttribute('href', '/api/jobs/validate-1/validation-json');
   });
 
@@ -63,7 +63,7 @@ describe('ReportPage', () => {
 
     render(<ReportPage validateJob={validateJob} onRestart={vi.fn()} onUploadAgain={vi.fn()} />);
 
-    expect(await screen.findByText(/未通過 \(failed\)/)).toBeInTheDocument();
+    expect(await screen.findByText('Validation Failed')).toBeInTheDocument();
     expect(screen.getByText('EK does not match')).toBeInTheDocument();
 
     const failingRow = screen.getByText('EK does not match').closest('tr');
